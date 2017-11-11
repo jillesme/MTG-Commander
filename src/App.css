@@ -1,0 +1,76 @@
+.new-player {
+    display: flex;
+    border-bottom: 1px solid grey;
+}
+
+.new-player input[type="text"] {
+    flex: 1;
+    min-width: 80%;
+    padding: 5px;
+    border: none;
+    height: 100%;
+}
+
+.new-player button {
+    flex: 1;
+    border-radius: 0;
+    border: none;
+    padding: 5px 10px;
+}
+
+.player-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.player {
+    box-sizing: border-box;
+    flex: 1;
+    min-width: 100%;
+    margin: 10px 0;
+}
+
+.player-heading {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid black;
+}
+
+.player-heading button {
+    min-width: 50px;
+    text-align: center;
+    border-radius: 0;
+    padding: 5px 0;
+    border: none;
+}
+
+.player-heading h2 {
+    min-width: 50%;
+    padding: 0 10px;
+}
+
+.player-heading .player-controls {
+    display: flex;
+    flex: 1;
+}
+
+.player-heading .player-controls > button {
+    min-width: 50%;
+    text-align: center;
+}
+
+.player-commander-damages {
+    display: flex;
+    justify-content: space-between;
+}
+
+.player-commander-damages div {
+    flex: 1;
+    border-right: 1px solid black;
+    text-align: center;
+}
+
+.player-commander-damages div:last-child {
+    border-right: 0;
+}
+

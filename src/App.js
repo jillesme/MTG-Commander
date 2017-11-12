@@ -66,21 +66,22 @@ class Player extends Component {
 
   render() {
     const { store, player } = this.props;
-    return (<div>
-      <div>
+    return (<div class="Player">
+      <div class="Player-Header">
+        <span>{ player.life }</span>
+        <h2>{ player.name }</h2>
         <button onClick={ () => store.removePlayer(player.id) }>X</button>
-        <h2 style={ { 'textDecoration': player.isDead ? 'line-through' : '' } }>{ player.name } ({ player.life })</h2>
+      </div>
 
         <div>
           <input type="range" min={ 1 } max={ 10 } value={ this.impact } onChange={ ev => this.impact = ev.target.value } />
           <span>{ this.impact }</span>
           <button onClick={ () => this.handleClick() }>Pow</button>
           <label>
-            <input type="checkbox" selected={ this.isLifeGain } onChange={ ev => this.isLifeGain = ev.target.checked } />
-            Increase Life
+            <input type="checkbox" checked={ this.isLifeGain } onChange={ ev => this.isLifeGain = ev.target.checked } />
+            Gain
           </label>
         </div>
-      </div>
 
       <div>
         { player.commanderDamage.values().map((sender, i) => (<CommanderDamage player={ player } opponent={ sender } key={ i } />)) }
@@ -90,14 +91,14 @@ class Player extends Component {
 }
 
 const PlayerList = inject('store')(observer(({ store }) => (
-  <div>
+  <div className="PlayerList">
     { store.players.map(player => <Player key={ player.id } player={ player } />) }
   </div>
 )));
 
 
 const App = () => (
-  <div>
+  <div className="App">
     <NewPlayer />
     <PlayerList />
   </div>

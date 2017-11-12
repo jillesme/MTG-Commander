@@ -1,0 +1,35 @@
+.App {
+    padding: 5px 10px;
+}
+
+.PlayerList {
+    margin-top: 20px;
+}
+
+.Player {
+    margin: 5px 0;
+}
+
+.Player-Header {
+    display: flex;
+}
+
+.Player-Header h2 {
+    font-family: 'Helvetica Neue', Helvetica, sans-serif;
+    padding: 0 5px;
+    line-height: 1.5;
+}
+
+.Player-Header button {
+    background: red;
+    color: white;
+    border: none;
+    margin: 0 0 0 auto;
+    padding: 5px 10px;
+}
+
+.Player-Header span {
+    background: green;
+    color: white;
+    padding: 5px 10px;
+}

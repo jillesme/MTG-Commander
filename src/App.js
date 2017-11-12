@@ -27,10 +27,10 @@ class NewPlayer extends Component {
   }
 }
 
-const CommanderDamage = inject('store')(observer(({ receiver, sender, store }) => (<div>
-  <p>{ sender.name }: { sender.damage }
-  <button onClick={ () => store.dealCommanderDamage(receiver.id, sender.id) }>+</button></p>
-</div>)));
+const CommanderDamage = observer(({ player, opponent }) => (<div>
+  <p>{ opponent.name }: { opponent.damage }
+  <button onClick={ () => player.increaseCommanderDamage(opponent) }>+</button></p>
+</div>));
 
 const Player = inject('store')(observer(({ player, store }) => (<div className="player">
   <div className="player-heading">
@@ -38,13 +38,13 @@ const Player = inject('store')(observer(({ player, store }) => (<div className="
     <h2 style={ { 'textDecoration': player.isDead ? 'line-through' : '' } }>{ player.name } ({ player.life })</h2>
 
     <div className="player-controls">
-      <button onClick={ () => store.decreaseLife(player.id) }>-</button>
-      <button onClick={ () => store.increaseLife(player.id) }>+</button>
+      <button onClick={ () => player.decreaseLife() }>-</button>
+      <button onClick={ () => player.increaseLife() }>+</button>
     </div>
   </div>
 
   <div class="player-commander-damages">
-  { player.commanderDamages.map((sender, i) => (<CommanderDamage receiver={ player } sender={ sender } key={ i } />)) }
+  { player.commanderDamage.values().map((sender, i) => (<CommanderDamage player={ player } opponent={ sender } key={ i } />)) }
   </div>
 </div>)));
 

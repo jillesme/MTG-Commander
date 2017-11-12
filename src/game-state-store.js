@@ -12,17 +12,17 @@ class Player {
     this.name = name;
   }
 
-  @action increaseLife() {
-    this.life += 1;
+  @action modifyLife(amount, isLifeGain) {
+    if (isLifeGain) {
+      this.life += amount;
+    } else {
+      this.life -= amount;
+    }
   }
 
-  @action decreaseLife() {
-    this.life -= 1;
-  }
-
-  @action increaseCommanderDamage(fromPlayer) {
-    this.decreaseLife();
-    this.commanderDamage.get(fromPlayer.id).damage += 1;
+  @action increaseCommanderDamage(fromPlayer, amount) {
+    this.life -= amount;
+    this.commanderDamage.get(fromPlayer.id).damage += amount;
   }
 
   @computed get isDead() {

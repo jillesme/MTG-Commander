@@ -10,12 +10,20 @@
     margin: 5px 0;
 }
 
+.Player.Dead {
+    background: pink;
+    font-family: "Comic Sans MS", sans-serif;
+}
+
+.Player.Dead button {
+    pointer-events: none;
+}
+
 .Player-Header {
     display: flex;
 }
 
 .Player-Header h2 {
-    font-family: 'Helvetica Neue', Helvetica, sans-serif;
     padding: 0 5px;
     line-height: 1.5;
 }

@@ -66,7 +66,7 @@ class Player extends Component {
 
   render() {
     const { store, player } = this.props;
-    return (<div class="Player">
+    return (<div className={ `Player ${ player.isDead ? 'Dead' : '' } `}>
       <div class="Player-Header">
         <span>{ player.life }</span>
         <h2>{ player.name }</h2>

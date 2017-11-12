@@ -1,4 +1,4 @@
-import { observable, action, computed } from 'mobx';
+import { observable, action, computed, toJS } from 'mobx';
 import uuid from 'uuid/v4';
 
 class Player {
@@ -7,9 +7,11 @@ class Player {
   @observable life = 40;
   @observable commanderDamage = observable.map({});
 
-  constructor(id, name) {
+  constructor(id, name, life) {
     this.id = id;
     this.name = name;
+
+    if (typeof life !== 'undefined') this.life = life;
   }
 
   @action modifyLife(amount, isLifeGain) {
@@ -35,6 +37,26 @@ export default class GameStateStore {
 
   constructor(initialPlayers) {
     initialPlayers.forEach(this.addPlayer, this);
+  }
+
+  getGameState() {
+    return JSON.stringify(toJS(this.playerMap));
+  }
+
+  @action loadGameState(state) {
+    // In case player state is loaded mid game.
+    this.playerMap.clear();
+
+    Object.values(JSON.parse(state)).forEach(user => {
+      const newPlayer = new Player(user.id, user.name, user.life);
+
+      Object.keys(user.commanderDamage).forEach(opponentId => {
+        newPlayer.commanderDamage.set(opponentId, user.commanderDamage[opponentId])
+      });
+
+      this.playerMap.set(newPlayer.id, newPlayer);
+    });
+
   }
 
   @action addPlayer(name) {

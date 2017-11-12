@@ -67,7 +67,7 @@ class Player extends Component {
   render() {
     const { store, player } = this.props;
     return (<div className={ `Player ${ player.isDead ? 'Dead' : '' } `}>
-      <div class="Player-Header">
+      <div className="Player-Header">
         <span>{ player.life }</span>
         <h2>{ player.name }</h2>
         <button onClick={ () => store.removePlayer(player.id) }>X</button>
@@ -96,12 +96,31 @@ const PlayerList = inject('store')(observer(({ store }) => (
   </div>
 )));
 
+@inject('store')
+@observer
+class GameStateActions extends Component {
+  @observable gameState = '';
 
-const App = () => (
-  <div className="App">
-    <NewPlayer />
-    <PlayerList />
-  </div>
-);
+  render() {
+    const { store } = this.props;
+    return (<div>
+      <textarea placeholder="Game State" value={ this.gameState } onChange={ ev => this.gameState = ev.target.value }></textarea>
+      <button onClick={ () => this.gameState = store.getGameState() }>Get Current</button>
+      <button onClick={ () => store.loadGameState(this.gameState) }>Load</button>
+    </div>)
+  }
+}
+
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        <NewPlayer />
+        <PlayerList />
+
+        <GameStateActions />
+      </div>)
+  }
+};
 
 export default App;

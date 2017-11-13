@@ -6,7 +6,7 @@ import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
-import GameStateStore from './game-state-store';
+import GameStateStore from './GameState.store';
 
 const store = new GameStateStore(['Jilles', 'Phil', 'Martin', 'Darragh']);
 

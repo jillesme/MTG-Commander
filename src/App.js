@@ -42,9 +42,9 @@ class CommanderDamage extends Component {
   }
 
   render() {
-    const { opponent } = this.props;
+    const { opponent, damage } = this.props;
     return (<div>
-      <p>{ opponent.name }: { opponent.damage }</p>
+      <p>{ opponent }: { damage }</p>
       <input type="range" value={ this.impact } min={ 1 } max={ 10 } onChange={ ev => this.handleChange(ev) } /><span>{ this.impact }</span>
       <button onClick={ () => this.handleClick() }>Bang</button>
     </div>);
@@ -70,7 +70,7 @@ class Player extends Component {
       <div className="Player-Header">
         <span>{ player.life }</span>
         <h2>{ player.name }</h2>
-        <button onClick={ () => store.removePlayer(player.id) }>X</button>
+        <button onClick={ () => store.removePlayer(player.name) }>X</button>
       </div>
 
         <div>
@@ -84,7 +84,7 @@ class Player extends Component {
         </div>
 
       <div>
-        { player.commanderDamage.values().map((sender, i) => (<CommanderDamage player={ player } opponent={ sender } key={ i } />)) }
+        { player.commanderDamage.entries().map(([opponent, damage], i) => (<CommanderDamage player={ player } opponent={ opponent } damage={ damage } key={ i } />)) }
       </div>
     </div>)
   }
@@ -92,7 +92,7 @@ class Player extends Component {
 
 const PlayerList = inject('store')(observer(({ store }) => (
   <div className="PlayerList">
-    { store.players.map(player => <Player key={ player.id } player={ player } />) }
+    { store.players.map(player => <Player key={ player.name } player={ player } />) }
   </div>
 )));
 

@@ -1,8 +1,7 @@
 import { observable, action, computed, toJS } from 'mobx';
-import uuid from 'uuid/v4';
 
 class Player {
-  id = '';
+  id;
   name = '';
   @observable life = 40;
   @observable commanderDamage = observable.map({});
@@ -11,6 +10,7 @@ class Player {
     this.id = id;
     this.name = name;
 
+    // Only used when reloading game state
     if (typeof life !== 'undefined') this.life = life;
   }
 
@@ -24,11 +24,12 @@ class Player {
 
   @action increaseCommanderDamage(fromPlayer, amount) {
     this.life -= amount;
-    this.commanderDamage.get(fromPlayer.id).damage += amount;
+    const currentDamage = this.commanderDamage.get(fromPlayer);
+    this.commanderDamage.set(fromPlayer, currentDamage + amount);
   }
 
   @computed get isDead() {
-    return this.life === 0 || this.commanderDamage.values().some(player => player.damage >= 21);
+    return this.life === 0 || this.commanderDamage.values().some(damage => damage >= 21);
   }
 }
 
@@ -54,19 +55,19 @@ export default class GameStateStore {
         newPlayer.commanderDamage.set(opponentId, user.commanderDamage[opponentId])
       });
 
-      this.playerMap.set(newPlayer.id, newPlayer);
+      this.playerMap.set(newPlayer.name, newPlayer);
     });
 
   }
 
+  lastUsedId = 0;
   @action addPlayer(name) {
-    const player = new Player(uuid(), name);
+    const player = new Player(this.lastUsedId++, name);
 
-    const createDamageObject = target => ({ id: target.id, name: target.name, damage: 0 });
     // Set commander damage for all players and current player
     this.playerMap.forEach(existingPlayer => {
-      existingPlayer.commanderDamage.set(player.id, createDamageObject(player));
-      player.commanderDamage.set(existingPlayer.id, createDamageObject(existingPlayer));
+      existingPlayer.commanderDamage.set(player.name, 0);
+      player.commanderDamage.set(existingPlayer.name, 0);
     });
 
     this.playerMap.set(player.id, player);

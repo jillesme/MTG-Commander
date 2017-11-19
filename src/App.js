@@ -5,7 +5,7 @@ import './App.css';
 
 @inject('store')
 @observer
-class NewPlayer extends Component {
+class GameActions extends Component {
   @observable name = '';
 
   handleChange(ev) {
@@ -17,17 +17,26 @@ class NewPlayer extends Component {
     this.name = '';
   }
 
+  handleGameReset() {
+    this.props.store.reset();
+  }
+
   isButtonDisabled() {
     return this.props.store.players.has(this.name) || this.name < 3;
   }
 
   render() {
-    return (<form className="form-inline">
-      <div className="input-group">
-        <input className="form-control" type="text" value={ this.name } placeholder="Name.." onChange={ ev => this.handleChange(ev) } />
-        <button className="btn btn-secondary" disabled={ this.isButtonDisabled() } onClick={ () => this.handleClick() }>Add</button>
+    return (
+      <div className="NewPlayer">
+        <form className="form-inline">
+          <div className="input-group">
+            <input className="form-control" type="text" value={ this.name } placeholder="Name.." onChange={ ev => this.handleChange(ev) } />
+            <button className="btn btn-secondary" disabled={ this.isButtonDisabled() } onClick={ () => this.handleClick() }>Add</button>
+          </div>
+          <button className="btn btn-secondary" onClick={ () => this.handleGameReset() }>Reset Game</button>
+        </form>
       </div>
-    </form>)
+    );
   }
 }
 
@@ -36,26 +45,27 @@ class NewPlayer extends Component {
 class CommanderDamages extends Component {
 
   handleIncreaseFrom(opponent) {
-    this.props.store.increaseCommanderDamage(this.props.player, opponent)
+    this.props.store.increaseCommanderDamage(this.props.player.name, opponent)
   }
 
   handleDecreaseFrom(opponent) {
-    this.props.store.decreaseCommanderDamage(this.props.player, opponent)
+    this.props.store.decreaseCommanderDamage(this.props.player.name, opponent)
   }
 
   render() {
     const { player } = this.props;
     return (<div className="Player-CommanderDamages">
-      {
-        player.commanderDamages.map(opponent => (
-          <div key={ opponent.name }>
-            { opponent.name } - { opponent.damage }
-            <div className="btn-group" role="group">
-              <button type="button" className="btn btn-success" onClick={ () => this.handleIncreaseFrom(opponent) }>+</button>
-              <button type="button" className="btn btn-danger" onClick={ () => this.handleDecreaseFrom(opponent) }>-</button>
+      <ul className="list-group">{
+        Object.entries(player.commanderDamage).map(([opponentName, damage]) => (
+          <li className="list-group-item" key={ opponentName }>
+            <span className="badge badge-secondary">{ damage }</span>
+            { opponentName }
+            <div className="btn-group float-right" role="group">
+              <button type="button" className="btn btn-success btn-sm" onClick={ () => this.handleIncreaseFrom(opponentName) }>+</button>
+              <button type="button" className="btn btn-danger btn-sm" onClick={ () => this.handleDecreaseFrom(opponentName) }>-</button>
             </div>
-          </div>))
-      }
+          </li>))
+      }</ul>
     </div>);
   }
 }
@@ -63,15 +73,14 @@ class CommanderDamages extends Component {
 @inject('store')
 @observer
 class Player extends Component {
-
   @observable isExpanded = false;
 
   handleIncrease() {
-    this.props.store.increaseLife(this.props.player)
+    this.props.store.increaseLife(this.props.player.name)
   }
 
   handleDecrease() {
-    this.props.store.decreaseLife(this.props.player)
+    this.props.store.decreaseLife(this.props.player.name)
   }
 
   handleDelete() {
@@ -142,11 +151,9 @@ class App extends Component {
 
     return (
       <div className="App">
-        <NewPlayer />
-
         <PlayerList />
 
-        <button onClick={ () => store.reset() }>RESET</button>
+        <GameActions />
       </div>);
   }
 }

@@ -1,8 +1,14 @@
 .Player {
-    margin: 10px;
+    margin: 30px;
 }
 
 .Player-Header {
     display: flex;
     justify-content: space-between;
 }
+
+.Player-Header h2 {
+    flex: 1;
+}
+
+.NewPlayer {}

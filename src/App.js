@@ -27,26 +27,24 @@ class NewPlayer extends Component {
   }
 }
 
+@inject('store')
 @observer
 class CommanderDamage extends Component {
-  @observable impact = 1;
 
-  handleChange(ev) {
-    this.impact = ev.target.value;
+  handleIncrease() {
+    this.props.store.increaseCommanderDamage(this.props.player, this.props.opponent)
   }
 
-  handleClick() {
-    const { player, opponent } = this.props;
-    player.increaseCommanderDamage(opponent, +this.impact);
-    this.impact = 1;
+  handleDecrease() {
+    this.props.store.decreaseCommanderDamage(this.props.player, this.props.opponent)
   }
 
   render() {
-    const { opponent, damage } = this.props;
+    const { opponent } = this.props;
     return (<div>
-      <p>{ opponent }: { damage }</p>
-      <input type="range" value={ this.impact } min={ 1 } max={ 10 } onChange={ ev => this.handleChange(ev) } /><span>{ this.impact }</span>
-      <button onClick={ () => this.handleClick() }>Bang</button>
+      { opponent.name } - { opponent.damage }
+      <button onClick={ () => this.handleIncrease() }>+</button>
+      <button onClick={ () => this.handleDecrease() }>-</button>
     </div>);
   }
 }
@@ -54,73 +52,66 @@ class CommanderDamage extends Component {
 @inject('store')
 @observer
 class Player extends Component {
-  @observable impact = 1;
-  @observable isLifeGain = false;
 
-  handleClick() {
-    this.props.player.modifyLife(+this.impact, this.isLifeGain);
-
-    this.impact = 1;
-    this.isLifeGain = false;
+  handleIncrease() {
+    this.props.store.increaseLife(this.props.player)
   }
 
+  handleDecrease() {
+    this.props.store.decreaseLife(this.props.player)
+  }
+
+  handleDelete() {
+    this.props.store.removePlayer(this.props.player.name);
+  }
+
+
   render() {
-    const { store, player } = this.props;
-    return (<div className={ `Player ${ player.isDead ? 'Dead' : '' } `}>
-      <div className="Player-Header">
-        <span>{ player.life }</span>
-        <h2>{ player.name }</h2>
-        <button onClick={ () => store.removePlayer(player.name) }>X</button>
-      </div>
-
-        <div>
-          <input type="range" min={ 1 } max={ 10 } value={ this.impact } onChange={ ev => this.impact = ev.target.value } />
-          <span>{ this.impact }</span>
-          <button onClick={ () => this.handleClick() }>Pow</button>
-          <label>
-            <input type="checkbox" checked={ this.isLifeGain } onChange={ ev => this.isLifeGain = ev.target.checked } />
-            Gain
-          </label>
-        </div>
-
-      <div>
-        { player.commanderDamage.entries().map(([opponent, damage], i) => (<CommanderDamage player={ player } opponent={ opponent } damage={ damage } key={ i } />)) }
-      </div>
+    const { player } = this.props;
+    return (<div className="Player">
+      <p>{ player.name } - { player.life }</p>
+      <button onClick={ () => this.handleIncrease() }>+</button>
+      <button onClick={ () => this.handleDecrease() }>-</button>
+      <br/>
+      { player.commanderDamages.map(opponent => <CommanderDamage key={ opponent.name } player={ player } opponent={ opponent} />) }
+      <button onClick={ () => this.handleDelete() }>X</button>
     </div>)
   }
 }
-
-const PlayerList = inject('store')(observer(({ store }) => (
-  <div className="PlayerList">
-    { store.players.map(player => <Player key={ player.name } player={ player } />) }
-  </div>
-)));
 
 @inject('store')
 @observer
-class GameStateActions extends Component {
-  @observable gameState = '';
-
+class PlayerList extends Component {
   render() {
-    const { store } = this.props;
-    return (<div>
-      <textarea placeholder="Game State" value={ this.gameState } onChange={ ev => this.gameState = ev.target.value }></textarea>
-      <button onClick={ () => this.gameState = store.getGameState() }>Get Current</button>
-      <button onClick={ () => store.loadGameState(this.gameState) }>Load</button>
+    return (<div className="PlayerList">
+      { this.props.store.players.values().map(player => <Player key={ player.name } player={ player } />) }
     </div>)
   }
 }
 
+const Loading = () => <h1>Loading...</h1>;
+
+@inject('store')
+@observer
 class App extends Component {
+  componentDidMount() {
+    this.props.store.initialise();
+  }
   render() {
+    const { store } = this.props;
+    if (store.isLoading) {
+      return <Loading />;
+    }
+
     return (
       <div className="App">
         <NewPlayer />
+
         <PlayerList />
 
-        <GameStateActions />
-      </div>)
+        <button onClick={ () => store.reset() }>RESET</button>
+      </div>);
   }
-};
+}
 
 export default App;

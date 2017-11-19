@@ -5,7 +5,6 @@ import * as firebase from "firebase";
 
 import App from './App';
 import GameStore from './GameStore';
-import registerServiceWorker from './registerServiceWorker';
 
 // TODO move this into ENV variables
 firebase.initializeApp({
@@ -19,4 +18,3 @@ const store = new GameStore(firebase.database());
 window.db = firebase.database();
 
 ReactDOM.render(<Provider store={ store }><App /></Provider>, document.getElementById('root'));
-registerServiceWorker();

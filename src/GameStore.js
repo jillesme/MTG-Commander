@@ -26,7 +26,6 @@ export default class GameStore {
   initialise() {
     this.database.ref('players').once('value', action(() => {
       this.isLoading = false;
-      console.log(this.players.entries())
     }));
 
     this.database.ref('players').on('child_added', this.onPlayerAddedOrUpdated.bind(this));

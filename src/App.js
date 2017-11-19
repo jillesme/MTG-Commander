@@ -17,34 +17,45 @@ class NewPlayer extends Component {
     this.name = '';
   }
 
+  isButtonDisabled() {
+    return this.props.store.players.has(this.name) || this.name < 3;
+  }
+
   render() {
-    return (
-      <div>
-        <input type="text" value={ this.name } placeholder="Name.." onChange={ ev => this.handleChange(ev) } />
-        <button disabled= { this.name.length < 1 } onClick={ () => this.handleClick() }>Add</button>
+    return (<form className="form-inline">
+      <div className="input-group">
+        <input className="form-control" type="text" value={ this.name } placeholder="Name.." onChange={ ev => this.handleChange(ev) } />
+        <button className="btn btn-secondary" disabled={ this.isButtonDisabled() } onClick={ () => this.handleClick() }>Add</button>
       </div>
-    )
+    </form>)
   }
 }
 
 @inject('store')
 @observer
-class CommanderDamage extends Component {
+class CommanderDamages extends Component {
 
-  handleIncrease() {
-    this.props.store.increaseCommanderDamage(this.props.player, this.props.opponent)
+  handleIncreaseFrom(opponent) {
+    this.props.store.increaseCommanderDamage(this.props.player, opponent)
   }
 
-  handleDecrease() {
-    this.props.store.decreaseCommanderDamage(this.props.player, this.props.opponent)
+  handleDecreaseFrom(opponent) {
+    this.props.store.decreaseCommanderDamage(this.props.player, opponent)
   }
 
   render() {
-    const { opponent } = this.props;
-    return (<div>
-      { opponent.name } - { opponent.damage }
-      <button onClick={ () => this.handleIncrease() }>+</button>
-      <button onClick={ () => this.handleDecrease() }>-</button>
+    const { player } = this.props;
+    return (<div className="Player-CommanderDamages">
+      {
+        player.commanderDamages.map(opponent => (
+          <div key={ opponent.name }>
+            { opponent.name } - { opponent.damage }
+            <div className="btn-group" role="group">
+              <button type="button" className="btn btn-success" onClick={ () => this.handleIncreaseFrom(opponent) }>+</button>
+              <button type="button" className="btn btn-danger" onClick={ () => this.handleDecreaseFrom(opponent) }>-</button>
+            </div>
+          </div>))
+      }
     </div>);
   }
 }
@@ -52,6 +63,8 @@ class CommanderDamage extends Component {
 @inject('store')
 @observer
 class Player extends Component {
+
+  @observable isExpanded = false;
 
   handleIncrease() {
     this.props.store.increaseLife(this.props.player)
@@ -65,16 +78,40 @@ class Player extends Component {
     this.props.store.removePlayer(this.props.player.name);
   }
 
+  toggleView() {
+    this.isExpanded = !this.isExpanded;
+  }
+
+  getLifeColour() {
+    const { player } = this.props;
+    if (player.life >= 25) {
+      return 'badge-success';
+    } else if (player.life < 25 && player.life >= 10) {
+      return 'badge-warning';
+    }
+    return 'badge-danger';
+  }
 
   render() {
     const { player } = this.props;
     return (<div className="Player">
-      <p>{ player.name } - { player.life }</p>
-      <button onClick={ () => this.handleIncrease() }>+</button>
-      <button onClick={ () => this.handleDecrease() }>-</button>
-      <br/>
-      { player.commanderDamages.map(opponent => <CommanderDamage key={ opponent.name } player={ player } opponent={ opponent} />) }
-      <button onClick={ () => this.handleDelete() }>X</button>
+
+      <form className="form-inline Player-Header">
+        <h2 onClick={ () => this.toggleView() }>
+          <span className={ `badge ${this.getLifeColour()} mr-1` }>{ player.life }</span>
+          { player.name }</h2>
+
+      <div className="btn-group" role="group">
+        <button type="button" className="btn btn-success" onClick={ () => this.handleIncrease() }>+</button>
+        <button type="button" className="btn btn-danger" onClick={ () => this.handleDecrease() }>-</button>
+      </div>
+      </form>
+
+      <div className={ this.isExpanded ? '' : 'd-none' }>
+        <CommanderDamages player={ player } />
+        <button type="button" className="btn btn-warning" onClick={ () => this.handleDelete() }>Delete</button>
+      </div>
+
     </div>)
   }
 }

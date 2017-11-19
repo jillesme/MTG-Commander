@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'mobx-react';
 import * as firebase from "firebase";
 
-import './index.css';
 import App from './App';
 import GameStore from './GameStore';
 import registerServiceWorker from './registerServiceWorker';

@@ -33,7 +33,7 @@ class GameActions extends Component {
             <input className="form-control" type="text" value={ this.name } placeholder="Name.." onChange={ ev => this.handleChange(ev) } />
             <button className="btn btn-secondary" disabled={ this.isButtonDisabled() } onClick={ () => this.handleClick() }>Add</button>
           </div>
-          <button className="btn btn-secondary" onClick={ () => this.handleGameReset() }>Reset Game</button>
+          <button className="btn btn-secondary" type="button" onClick={ () => this.handleGameReset() }>Reset Game</button>
         </form>
       </div>
     );
@@ -54,6 +54,9 @@ class CommanderDamages extends Component {
 
   render() {
     const { player } = this.props;
+    if (!player.commanderDamage) {
+      return <span>Add more players!</span>
+    }
     return (<div className="Player-CommanderDamages">
       <ul className="list-group">{
         Object.entries(player.commanderDamage).map(([opponentName, damage]) => (

@@ -4,7 +4,7 @@ import { Provider } from 'mobx-react';
 import * as firebase from "firebase";
 
 import App from './App';
-import GameStore from './GameStore';
+import GameStore from './stores/GameStore';
 
 firebase.initializeApp({
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,

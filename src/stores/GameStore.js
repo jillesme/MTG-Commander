@@ -1,6 +1,6 @@
 import { observable, action, toJS } from 'mobx';
 
-import { LIFE_TOTAL } from './constants';
+import { LIFE_TOTAL } from '../constants';
 
 export default class GameStore {
   @observable isLoading = true;

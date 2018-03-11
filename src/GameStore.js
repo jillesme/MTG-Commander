@@ -72,7 +72,10 @@ export default class GameStore {
   }
 
   decreaseLife(player) {
-    this.database.ref('players/' + player).child('life').transaction(life => life - 1);
+    const currentLife = this.players.get(player).life;
+    if (currentLife > 0) {
+      this.database.ref('players/' + player).child('life').transaction(life => life - 1);
+    }
   }
 
   increaseCommanderDamage(player, opponent) {
@@ -85,10 +88,11 @@ export default class GameStore {
   }
 
   decreaseCommanderDamage(player, opponent) {
-    this.increaseLife(player);
-
     this.database.ref('players/' + player).child('commanderDamage').transaction(damages => {
-      damages[opponent] = damages[opponent] - 1;
+      if (damages[opponent] > 0) {
+        this.increaseLife(player);
+        damages[opponent] = damages[opponent] - 1;
+      }
       return damages;
     });
   }

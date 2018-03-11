@@ -1,5 +1,6 @@
-import { observable, action } from 'mobx';
-import { DefaultState } from './constants';
+import { observable, action, toJS } from 'mobx';
+
+import { LIFE_TOTAL } from './constants';
 
 export default class GameStore {
   @observable isLoading = true;
@@ -48,7 +49,7 @@ export default class GameStore {
 
   addPlayer(name) {
     const insertQuery = {
-      life: 40,
+      life: LIFE_TOTAL,
       // Adds existing player's name to new player commander damages
       commanderDamage: this.players.values().reduce((acc, player) => {
         acc[player.name] = 0;
@@ -93,6 +94,17 @@ export default class GameStore {
   }
 
   reset() {
-    this.database.ref().set(DefaultState);
+    const players = toJS(this.players);
+
+    Object.keys(players).forEach(player => {
+      players[player].life = LIFE_TOTAL;
+
+      Object.keys(players[player].commanderDamage).forEach(opponent => {
+        players[player].commanderDamage[opponent] = 0;
+      });
+    });
+
+
+    this.database.ref('players/').update(players)
   }
 }

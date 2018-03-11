@@ -6,15 +6,15 @@ import * as firebase from "firebase";
 import App from './App';
 import GameStore from './GameStore';
 
-// TODO move this into ENV variables
 firebase.initializeApp({
-  apiKey: 'AIzaSyBllPYr91TF1-xg4RsrWlq5xOA6FWFWPO8',
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: 'mtg-life-counters.firebaseapp.com',
   databaseURL: 'https://mtg-life-counters.firebaseio.com/',
 });
 
 const store = new GameStore(firebase.database());
 
-window.db = firebase.database();
-
-ReactDOM.render(<Provider store={ store }><App /></Provider>, document.getElementById('root'));
+ReactDOM.render(
+  <Provider store={ store }>
+    <App />
+  </Provider>, document.getElementById('root'));

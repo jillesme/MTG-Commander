@@ -67,6 +67,15 @@ export default class GameStore {
     this.database.ref('players/' + name).set(insertQuery);
   }
 
+  randomPlayerAlert() {
+    const playerNames = this.players.values().map(n => n.name);
+    const randomIndex = Math.floor(Math.random() * Math.floor(playerNames.length));
+
+    const randomPlayer = playerNames[randomIndex];
+
+    alert(randomPlayer + (randomPlayer.toLowerCase() === 'jilles' ? ' 😁' : ' 😥'));
+  }
+
   increaseLife(player) {
     this.database.ref('players/' + player).child('life').transaction(life => life + 1);
   }

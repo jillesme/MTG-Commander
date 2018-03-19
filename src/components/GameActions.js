@@ -20,6 +20,10 @@ export default class GameActions extends Component {
     this.props.store.reset();
   }
 
+  handleRandomPlayer() {
+    this.props.store.randomPlayerAlert();
+  }
+
   isButtonDisabled() {
     return this.props.store.players.has(this.name) || this.name < 3;
   }
@@ -33,6 +37,7 @@ export default class GameActions extends Component {
             <button className="btn btn-secondary" disabled={ this.isButtonDisabled() } onClick={ () => this.handleClick() }>Add</button>
           </div>
           <button className="btn btn-secondary" type="button" onClick={ () => this.handleGameReset() }>Reset Game</button>
+          <button className="btn btn-primary" type="button" onClick={ () => this.handleRandomPlayer() }>Random Player</button>
         </form>
       </div>
     );
